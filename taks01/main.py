@@ -9,14 +9,15 @@ from aioshutil import copyfile
 async def read_folder(path: AsyncPath) -> None:
     try:
         async for element in path.iterdir():
-            if element.is_dir():
+            if await element.is_dir():
+                logging.info(f"Reading folder {element}")
                 await read_folder(element)
-            if element.is_file():
-                print(f"Parse folder: This is file - {element.name}")
+            else:
+                logging.info(f"Copying {element}")
                 await copy_file(element)
 
     except Exception as e:
-        print(f"Copy error: {e}")
+        logging.error(f"Read error: {e}")
 
 
 async def copy_file(file: AsyncPath) -> None:
